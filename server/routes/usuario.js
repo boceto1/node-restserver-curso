@@ -3,10 +3,18 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const Usuario = require('../models/usuarios')
+const {verificaToken,verificarAdmin_Role} = require('../middlewares/autenticacion')
 
 const app = express()
 
-app.get('/usuarios', (req, res) => {
+app.get('/usuarios',verificaToken,(req, res) => {
+
+    /* return res.json ({
+        usuario: req.usuario,
+        nombre: req.usuario.nombre,
+        email: req.usuario.email
+    }) */
+
 
     let desde = Number(req.query.desde) || 0;
     let limite = Number(req.query.limite) || 5;
@@ -38,7 +46,7 @@ app.get('/usuarios', (req, res) => {
     
 });
 
-app.post('/usuarios', (req, res) => {
+app.post('/usuarios',[verificaToken,verificarAdmin_Role],(req, res) => {
 
     let body = req.body
 
@@ -67,7 +75,7 @@ app.post('/usuarios', (req, res) => {
 
 });
 
-app.put('/usuarios/:id', (req, res) => {
+app.put('/usuarios/:id',[verificaToken,verificarAdmin_Role],(req, res) => {
 
     let id = req.params.id;
     let body = _.pick(req.body,['nombre','email','img','role','estado']);
@@ -99,7 +107,7 @@ app.put('/usuarios/:id', (req, res) => {
 });
 
 // Borrado lógico (Cambio de estado)
-app.delete('/usuarios/:id', (req, res) => {
+app.delete('/usuarios/:id',[verificaToken,verificarAdmin_Role],(req, res) => {
    
     let id = req.params.id;
 
@@ -112,7 +120,7 @@ app.delete('/usuarios/:id', (req, res) => {
              });  
          }
 
-         if(!usuarioBorrado){
+         if(!usuarioBorrado || !usuarioBorrado.estado){
             return res.status(404).json({
                 ok:false,
                 err: {message:'El usuario no existe'}
