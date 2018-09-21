@@ -9,12 +9,6 @@ const app = express()
 
 app.get('/usuarios',verificaToken,(req, res) => {
 
-    /* return res.json ({
-        usuario: req.usuario,
-        nombre: req.usuario.nombre,
-        email: req.usuario.email
-    }) */
-
 
     let desde = Number(req.query.desde) || 0;
     let limite = Number(req.query.limite) || 5;
