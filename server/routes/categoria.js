@@ -66,7 +66,7 @@ app.get('/categoria/:id',verificaToken , (req,res)=>{
 app.post('/categoria',verificaToken,(req,res)=>{
 
     let body = req.body
-    console.log(req.usuario._id);
+    
     let categoria = new Categoria({
         descripcion:body.descripcion,
         usuario: req.usuario._id
@@ -80,13 +80,6 @@ app.post('/categoria',verificaToken,(req,res)=>{
                 err
             });  
         }
-
-        if(!categoriaDB){
-            return res.status(404).json({
-                ok:false,
-                err: {message:'El categoria no existe'}
-            });  
-         }
 
         res.status(201).json({
             ok:true,
