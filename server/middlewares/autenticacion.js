@@ -27,6 +27,33 @@ const jwt = require('jsonwebtoken')
  }
 
  /**
+ * Verificar Token Imgagen por URL
+ */
+
+let verificaTokenImg = (req,res,next) =>{
+
+    let token = req.query.token;
+
+    jwt.verify(token,process.env.SEMILLA, (err,decoded)=>{
+
+        if(err){
+            return res.status(401).json({
+                ok:false,
+                err
+            })
+        }
+
+        //Para despues manejar un usuario ya validado
+        req.usuario = decoded.usuario;
+        next();
+
+    });
+ }
+
+
+
+
+ /**
   * Verificar Admin_Role
   */
 
@@ -49,5 +76,6 @@ const jwt = require('jsonwebtoken')
 
  module.exports={
      verificaToken,
-     verificarAdmin_Role
+     verificarAdmin_Role,
+     verificaTokenImg
  }
